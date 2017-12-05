@@ -1,4 +1,4 @@
-/*
+﻿/*
  * FreeOTP
  *
  * Authors: Nathaniel McCallum <npmccallum@redhat.com>
