@@ -1,4 +1,4 @@
-/*
+﻿/*
  * FreeOTP
  *
  * Authors: Nathaniel McCallum <npmccallum@redhat.com>
@@ -39,6 +39,7 @@
 package org.fedorahosted.freeotp;
 
 import android.Manifest;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.fedorahosted.freeotp.add.ScanActivity;
