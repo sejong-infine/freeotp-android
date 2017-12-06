@@ -28,7 +28,7 @@ public class CredentialManager {
     public static final String SETTING_ENABLE = "Enable";
     public static final String SETTING_TIME_TYPE="Time_type";
 
-    private Context mAppContext = null;
+    private Activity mActivity;
     private KeyguardManager mKeyguardManager;
     private SharedPreferences mPreferences;
 
@@ -43,10 +43,10 @@ public class CredentialManager {
      * init method => initialize
      * point of call => execute one time when running app.
      */
-    public int init(Context appContext) {
-        mAppContext = appContext;
-        mKeyguardManager = (KeyguardManager)mAppContext.getSystemService(Context.KEYGUARD_SERVICE);
-        mPreferences = ((Activity)mAppContext).getPreferences(MODE_PRIVATE);
+    public int init(Activity activity) {
+        mActivity = activity;
+        mKeyguardManager = (KeyguardManager) mActivity.getSystemService(Context.KEYGUARD_SERVICE);
+        mPreferences = mActivity.getPreferences(MODE_PRIVATE);
         if(isConfigExist() && isConfigValid()) {
             loadConfig();
         }
@@ -64,7 +64,7 @@ public class CredentialManager {
             return true;
         else {
             Intent intent = mKeyguardManager.createConfirmDeviceCredentialIntent(null,null);
-            ((Activity) mAppContext).startActivityForResult(intent, CREDENTIAL_CHECK);
+            mActivity.startActivityForResult(intent, CREDENTIAL_CHECK);
             return false;
         }
     }
