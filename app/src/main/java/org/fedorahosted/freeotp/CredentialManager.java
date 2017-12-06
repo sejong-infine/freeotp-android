@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.format.DateUtils;
-import java.lang.Exception;
 import java.lang.UnsupportedOperationException;
 import android.os.SystemClock;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -81,22 +81,16 @@ public class CredentialManager {
      * isConfigExist method=> Check wheter existing settings exist in SharedPreference.
      */
     private boolean isConfigExist() {
-        if(mPreferences.contains(SETTING_ENABLE) && mPreferences.contains(SETTING_TIME_TYPE))
-            return true;
-        else
-            return false;
+        return (mPreferences.contains(SETTING_ENABLE) && mPreferences.contains(SETTING_TIME_TYPE));
     }
 
     /*
      * isConfigValid method=> check whether existing SharedPreference's Settings are safe data.
      */
     private boolean isConfigValid() {
-        int tempTimeType = 0;
-        tempTimeType = mPreferences.getInt(SETTING_TIME_TYPE,-1);
-        if(tempTimeType == 10 || tempTimeType ==30 || tempTimeType ==60)
-            return true;
-        else
-            return false;
+        int timeType = 0;
+        timeType = mPreferences.getInt(SETTING_TIME_TYPE,-1);
+        return timeType == 10 || timeType == 30 || timeType == 60;
     }
 
     /*
@@ -112,17 +106,10 @@ public class CredentialManager {
      * saveConfig method => save variable's setting with SharedPreference.
      */
     private  boolean saveConfig() {
-        try {
-            if(mEnable != mPreferences.getBoolean(SETTING_ENABLE,false))
-                mPreferences.edit().putBoolean(SETTING_ENABLE,mEnable);
-            if(mTime != mPreferences.getInt(SETTING_TIME_TYPE,60))
-                mPreferences.edit().putInt(SETTING_TIME_TYPE,mTime);
-
-            return true;
-        } catch (Exception e) {
-            loadConfig();
-            return false;
-        }
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean(SETTING_ENABLE, mEnable);
+        editor.putInt(SETTING_TIME_TYPE, mTime);
+        return editor.commit();
     }
 
     public boolean getEnable() {
@@ -136,9 +123,9 @@ public class CredentialManager {
             case 30:
                 return TimeType.SEC_30;
             case 60:
-                return  TimeType.SEC_60;
+                return TimeType.SEC_60;
         }
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("invalid TimeType");
     }
 
     public boolean setEnable(boolean value) {
