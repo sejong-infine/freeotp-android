@@ -2,92 +2,58 @@ package org.fedorahosted.freeotp;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
-import android.widget.Toast;
-import android.view.View;
+
+import org.fedorahosted.freeotp.CredentialManager.TimeType;
 
 public class SettingActivity extends Activity {
-
-    private boolean mEnableLock = false;
-    private CredentialManager.TimeType mTimeType = CredentialManager.TimeType.SEC_30;
-
+    CredentialManager mCredentialManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCredentialManager = CredentialManager.getInstance();
         setContentView(R.layout.setting);
-        mEnableLock = CredentialManager.getInstance().getEnable();
-        mTimeType = CredentialManager.getInstance().getTime();
 
-        Switch enableLock = (Switch)findViewById(R.id.switch1);
-        RadioGroup setTimeType = (RadioGroup)findViewById(R.id.radioGroup1);
+        Switch enableLock = findViewById(R.id.setting_enable);
+        RadioGroup durationGroup = findViewById(R.id.setting_durationGroup);
 
-        enableLock.setChecked(mEnableLock);
-        switch(mTimeType)
-        {
+        enableLock.setChecked(mCredentialManager.getEnable());
+        switch(mCredentialManager.getTime()) {
             case SEC_10:
-                setTimeType.check(R.id.radioButton10);
+                durationGroup.check(R.id.setting_duration10);
                 break;
             case SEC_30:
-                setTimeType.check(R.id.radioButton30);
+                durationGroup.check(R.id.setting_duration30);
                 break;
             case SEC_60:
-                setTimeType.check(R.id.radioButton60);
+                durationGroup.check(R.id.setting_duration60);
                 break;
         }
 
         enableLock.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked==true)
-                {
-                    mEnableLock = true;
-                    Toast.makeText(SettingActivity.this, R.string.able_messgae, Toast.LENGTH_LONG).show();
-                }
-                else
-                    Toast.makeText(SettingActivity.this, R.string.disable_messgae, Toast.LENGTH_LONG).show();
+                    mCredentialManager.setEnable(isChecked);
             }
         });
 
-        setTimeType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        durationGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId) {
-                    case R.id.radioButton10:
-                        mTimeType = CredentialManager.TimeType.SEC_10;
+                    case R.id.setting_duration10:
+                        mCredentialManager.setTime(TimeType.SEC_10);
                         break;
-                    case R.id.radioButton30:
-                        mTimeType = CredentialManager.TimeType.SEC_30;
+                    case R.id.setting_duration30:
+                        mCredentialManager.setTime(TimeType.SEC_30);
                         break;
-                    case R.id.radioButton60:
-                        mTimeType = CredentialManager.TimeType.SEC_60;
-                        break;
-                    default:
+                    case R.id.setting_duration60:
+                        mCredentialManager.setTime(TimeType.SEC_60);
                         break;
                 }
             }
         });
-
     }
-
-    public void onClick_10sec(View v){
-        Toast.makeText(SettingActivity.this, R.string.setting_10sec_message, Toast.LENGTH_LONG).show();
-    }
-    public void onClick_30sec(View v){
-        Toast.makeText(SettingActivity.this, R.string.setting_30sec_message, Toast.LENGTH_LONG).show();
-    }
-    public void onClick_60sec(View v){
-        Toast.makeText(SettingActivity.this, R.string.setting_60sec_message, Toast.LENGTH_LONG).show();
-    }
-    public void onClick_save(View v){
-        CredentialManager.getInstance().setEnable(mEnableLock);
-        CredentialManager.getInstance().setTime(mTimeType);
-        Toast.makeText(SettingActivity.this, R.string.setting_save_message, Toast.LENGTH_LONG).show();
-        finish();
-    }
-
 }
